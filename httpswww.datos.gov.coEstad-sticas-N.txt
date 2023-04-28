@@ -1,0 +1,43 @@
+https://www.datos.gov.co/Estad-sticas-Nacionales/Medici-n-de-Pobreza-Multidimensional/rudq-z3px
+
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartUtilities;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.data.category.DefaultCategoryDataset;
+
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+
+public class GraficaDatosDocumento {
+    public static void main(String[] args) {
+        String archivo = "datos.txt"; // Ruta del archivo con los datos
+
+        DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+
+        try (BufferedReader br = new BufferedReader(new FileReader(archivo))) {
+            String linea;
+            while ((linea = br.readLine()) != null) {
+                // Supongamos que cada línea del archivo tiene el formato "etiqueta,valor"
+                String[] partes = linea.split(",");
+                String etiqueta = partes[0];
+                int valor = Integer.parseInt(partes[1]);
+
+                dataset.addValue(valor, "Valores", etiqueta);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        JFreeChart chart = ChartFactory.createBarChart("Gráfica de datos", "Etiqueta", "Valor",
+                dataset, PlotOrientation.VERTICAL, true, true, false);
+
+        try {
+            ChartUtilities.saveChartAsPNG(new File("grafica.png"), chart, 800, 600);
+            System.out.println("Gráfica creada exitosamente.");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+}
